@@ -80,9 +80,9 @@ function ApplicationReview() {
 
   return (
     <div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-        <button className="icon-btn" onClick={() => router.back()} aria-label="Back"><ChevronLeftIcon /></button>
-        <div style={{ flex: 1, minWidth: 0 }}>
+      <div style={{ display: 'flex', alignItems: 'flex-start', flexWrap: 'wrap', gap: 12, marginBottom: 20 }}>
+        <button className="icon-btn" onClick={() => router.back()} aria-label="Back" style={{ flexShrink: 0 }}><ChevronLeftIcon /></button>
+        <div style={{ flex: '1 1 220px', minWidth: 0 }}>
           <h1 style={{ fontSize: 20, fontWeight: 800 }}>Application Review</h1>
           <div style={{ fontSize: 12, color: 'var(--ink-soft)', marginTop: 2 }}>
             {app.referenceNumber} · {app.submittedAt ? `Submitted ${formatDate(app.submittedAt)}` : 'Not submitted'}
@@ -99,7 +99,7 @@ function ApplicationReview() {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))', gap: 20, alignItems: 'start' }}>
         {/* Personal Info */}
         <div className="glass-card" style={{ padding: 20 }}>
           <h3 style={{ fontSize: 14, fontWeight: 800, marginBottom: 14 }}>Personal Information</h3>

@@ -121,16 +121,16 @@ export default function AdminDashboardPage() {
                     const b = statusBadge(a.status);
                     return (
                       <tr key={a.id} style={{ borderBottom: '1px solid var(--line)' }}>
-                        <td style={td}>
+                        <td data-label="Client" style={td}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                             <div className="avatar" style={{ width: 32, height: 32, fontSize: 11 }}>{getInitials(a.fullName)}</div>
-                            <span style={{ fontWeight: 700 }}>{a.fullName}</span>
+                            <span className="clamp-2" title={a.fullName} style={{ fontWeight: 700 }}>{a.fullName}</span>
                           </div>
                         </td>
-                        <td style={{ ...td, color: 'var(--ink-soft)' }}>{a.referenceNumber}</td>
-                        <td style={{ ...td, color: 'var(--ink-soft)' }}>{formatDate(a.submittedAt || a.createdAt)}</td>
-                        <td style={td}><span className={b.className}>{b.label}</span></td>
-                        <td style={td}>
+                        <td data-label="Reference" style={{ ...td, color: 'var(--ink-soft)' }}>{a.referenceNumber}</td>
+                        <td data-label="Submitted" style={{ ...td, color: 'var(--ink-soft)' }}>{formatDate(a.submittedAt || a.createdAt)}</td>
+                        <td data-label="Status" style={td}><span className={b.className}>{b.label}</span></td>
+                        <td data-label="Action" style={td}>
                           <Link href={`/admin/applications/${a.id}`} style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--green-700)', textDecoration: 'none' }}>Review</Link>
                         </td>
                       </tr>

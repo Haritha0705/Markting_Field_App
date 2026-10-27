@@ -100,35 +100,35 @@ export default function AdminQuotationsPage() {
             <tbody>
               {rows.map(q => (
                 <tr key={q.id} style={{ borderBottom: '1px solid var(--line)' }}>
-                  <td style={td}>
-                    <div style={{ fontWeight: 700 }}>{q.clientName || 'Unnamed'}</div>
+                  <td data-label="Client" style={td}>
+                    <div className="clamp-2" title={q.clientName} style={{ fontWeight: 700 }}>{q.clientName || 'Unnamed'}</div>
                     <div style={{ fontSize: 11, color: 'var(--ink-faint)' }}>{formatDate(q.createdAt)}</div>
                   </td>
-                  <td style={{ ...td, color: 'var(--ink-soft)' }}>{q.createdBy ? `${q.createdBy.firstName} ${q.createdBy.lastName}` : '-'}</td>
-                  <td style={td}>
+                  <td data-label="Officer" style={{ ...td, color: 'var(--ink-soft)' }}>{q.createdBy ? `${q.createdBy.firstName} ${q.createdBy.lastName}` : '-'}</td>
+                  <td data-label="Category" style={td}>
                     <span className={`badge ${q.nationality === 'islam' ? 'badge-verified' : 'badge-pending'}`}>
                       {q.nationality === 'islam' ? 'Islam (Shariah)' : 'Sinhala'}
                     </span>
                   </td>
-                  <td style={{ ...td, fontWeight: 700 }}>{money(q.investmentAmount)}</td>
-                  <td style={{ ...td, color: 'var(--ink-soft)' }}>{q.periodValue} {q.periodUnit}</td>
-                  <td style={td}>
+                  <td data-label="Amount" style={{ ...td, fontWeight: 700 }}>{money(q.investmentAmount)}</td>
+                  <td data-label="Period" style={{ ...td, color: 'var(--ink-soft)' }}>{q.periodValue} {q.periodUnit}</td>
+                  <td data-label="Rate" style={td}>
                     {q.status === 'pending' ? (
                       <span style={{ color: 'var(--ink-faint)' }}>To set</span>
                     ) : q.ratePercentage != null ? (
                       <span style={{ fontWeight: 700, color: 'var(--green-700)' }}>{Number(q.ratePercentage)}%{q.nationality === 'islam' ? ' (Fixed)' : ''}</span>
                     ) : '-'}
                   </td>
-                  <td style={{ ...td, fontWeight: 700 }}>{q.maturityValue != null ? money(q.maturityValue) : '-'}</td>
-                  <td style={td}>
+                  <td data-label="Maturity" style={{ ...td, fontWeight: 700 }}>{q.maturityValue != null ? money(q.maturityValue) : '-'}</td>
+                  <td data-label="Status" style={td}>
                     <span className={`badge ${q.status === 'approved' ? 'badge-verified' : q.status === 'rejected' ? 'badge-rejected' : 'badge-pending'}`}>
                       {q.status === 'approved' ? 'Approved' : q.status === 'rejected' ? 'Rejected' : 'Pending'}
                     </span>
                   </td>
-                  <td style={td}>
+                  <td data-label="Actions" style={td}>
                     {q.status === 'pending' ? (
-                      <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                        <div className="field-input" style={{ padding: '6px 10px', width: 84 }}>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, alignItems: 'center', maxWidth: 170 }}>
+                        <div className="field-input" style={{ padding: '6px 10px', width: '100%' }}>
                           <input type="number" min={0} max={100} step="0.01" placeholder="Rate %" aria-label={`Rate percentage for ${q.clientName || 'quotation'}`} value={rateInput[q.id] || ''} onChange={e => setRateInput({ ...rateInput, [q.id]: e.target.value })} style={{ fontSize: 13 }} />
                         </div>
                         <button className="btn-primary" style={{ padding: '8px 14px', fontSize: 12, width: 'auto' }} onClick={() => approve(q)} disabled={busyId === q.id}>

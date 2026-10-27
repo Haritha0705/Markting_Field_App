@@ -206,8 +206,8 @@ export default function AdminOfficersPage() {
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                    <span style={{ fontSize: 14.5, fontWeight: 700 }}>{o.firstName} {o.lastName}</span>
-                    {o.isActive && <CheckCircleIcon size={14} />}
+                    <span className="clamp-2" style={{ fontSize: 14.5, fontWeight: 700 }}>{o.firstName} {o.lastName}</span>
+                    {o.isActive && <span style={{ display: 'flex', flexShrink: 0, color: 'var(--green-700)' }}><CheckCircleIcon size={14} /></span>}
                   </div>
                   <div style={{ fontSize: 12, color: 'var(--ink-soft)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis' }}>{o.email}</div>
                 </div>

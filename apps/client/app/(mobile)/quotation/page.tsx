@@ -83,7 +83,7 @@ export default function QuotationPage() {
               <button type="button" className={`seg-btn ${isIslam ? 'active' : ''}`} onClick={() => setNationality('islam')}>Islam (Shariah)</button>
             </div>
 
-            <div className="info-strip">
+            <div className="info-strip" style={{ flexWrap: 'nowrap', alignItems: 'flex-start' }}>
               <span>📋</span>
               {isIslam
                 ? <span>Rate: <strong>{ISLAM_RATE}% fixed</strong> · Period: <strong>{ISLAM_PERIOD} months</strong> · calculated instantly</span>

@@ -10,7 +10,7 @@ export const getInitials = (name?: string | null) =>
     .toUpperCase() || '??';
 
 export const money = (v?: string | number | null) =>
-  `Rs. ${Number(v || 0).toLocaleString('en-LK', { maximumFractionDigits: 2 })}`;
+  `Rs.\u00A0${Number(v || 0).toLocaleString('en-LK', { maximumFractionDigits: 2 })}`;
 
 export const formatDate = (v?: string | null) =>
   v ? new Date(v).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';

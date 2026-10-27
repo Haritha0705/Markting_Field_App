@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/lib/auth-context';
-import { applicationsApi, notificationsApi } from '@/lib/api';
+import { applicationsApi, authApi, imageUrl, notificationsApi } from '@/lib/api';
 import { getInitials, money, statusBadge } from '@/lib/format';
 import { errorMessage } from '@/lib/toast';
 import type { Application, ApplicationStats } from '@/lib/types';
@@ -30,11 +30,12 @@ function AnimatedCount({ target }: { target: number }) {
 }
 
 export default function DashboardPage() {
-  const { user, token } = useAuth();
+  const { user, token, updateUser } = useAuth();
   const [stats, setStats] = useState<ApplicationStats | null>(null);
   const [recentClients, setRecentClients] = useState<Application[] | null>(null);
   const [unread, setUnread] = useState(0);
   const [error, setError] = useState('');
+  const [photoFailed, setPhotoFailed] = useState(false);
 
   useEffect(() => {
     if (!token) return;
@@ -45,7 +46,11 @@ export default function DashboardPage() {
       .then(([s, r]) => { setStats(s); setRecentClients(r.content); })
       .catch((err) => setError(errorMessage(err, 'Could not load your dashboard')));
     notificationsApi.getUnreadCount(token).then((r) => setUnread(r.count)).catch(() => {});
+    // Login doesn't return the photo, so fetch the latest profile for the avatar
+    authApi.me(token).then((me) => updateUser({ firstName: me.firstName, lastName: me.lastName, imgUrl: me.imgUrl })).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
+  useEffect(() => setPhotoFailed(false), [user?.imgUrl]);
   const [greeting, setGreeting] = useState('Welcome');
   useEffect(() => {
     const h = new Date().getHours();
@@ -72,9 +77,11 @@ export default function DashboardPage() {
             animation: 'pulseDot 2.4s ease-in-out infinite',
           }}>{unread > 99 ? '99+' : unread}</span>}
         </Link>
-        <Link href="/profile" style={{ textDecoration: 'none' }}>
-          <div className="avatar" style={{ width: 38, height: 38, fontSize: 13 }}>
-            {user?.firstName?.[0] || 'O'}
+        <Link href="/profile" style={{ textDecoration: 'none' }} aria-label="Profile">
+          <div className="avatar" style={{ width: 38, height: 38, fontSize: 13, overflow: 'hidden' }}>
+            {user?.imgUrl && !photoFailed
+              ? <img src={imageUrl(user.imgUrl, 'c_fill,g_face,w_96,h_96')} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={() => setPhotoFailed(true)} />
+              : user?.firstName?.[0] || 'O'}
           </div>
         </Link>
       </div>
@@ -143,7 +150,7 @@ export default function DashboardPage() {
                 <Link key={c.id} href={`/clients/${c.id}`} className="client-row stagger-item" style={{ animationDelay: `${i * 0.07}s` }}>
                   <div className="avatar" style={{ width: 42, height: 42, fontSize: 14 }}>{getInitials(c.fullName)}</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14.5, fontWeight: 700 }}>{c.fullName}</div>
+                    <div className="clamp-2" style={{ fontSize: 14.5, fontWeight: 700 }}>{c.fullName}</div>
                     <div style={{ fontSize: 12, color: 'var(--ink-soft)', marginTop: 2 }}>{c.referenceNumber}</div>
                   </div>
                   <div style={{ textAlign: 'right', flexShrink: 0 }}>

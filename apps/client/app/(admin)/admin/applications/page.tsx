@@ -110,18 +110,18 @@ function ApplicationsList() {
                 const b = statusBadge(a.status);
                 return (
                   <tr key={a.id} style={{ borderBottom: '1px solid var(--line)' }}>
-                    <td style={td}>
+                    <td data-label="Client" style={td}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                         <div className="avatar" style={{ width: 32, height: 32, fontSize: 11 }}>{getInitials(a.fullName)}</div>
-                        <span style={{ fontWeight: 700 }}>{a.fullName}</span>
+                        <span className="clamp-2" title={a.fullName} style={{ fontWeight: 700 }}>{a.fullName}</span>
                       </div>
                     </td>
-                    <td style={{ ...td, color: 'var(--ink-soft)' }}>{a.referenceNumber}</td>
-                    <td style={{ ...td, fontWeight: 700 }}>{money(a.investment?.totalAmount)}</td>
-                    <td style={{ ...td, color: 'var(--ink-soft)' }}>{a.officer ? `${a.officer.firstName} ${a.officer.lastName}` : '-'}</td>
-                    <td style={{ ...td, color: 'var(--ink-soft)' }}>{formatDate(a.submittedAt || a.createdAt)}</td>
-                    <td style={td}><span className={b.className}>{a.status === 'approved' ? 'Approved' : b.label}</span></td>
-                    <td style={td}>
+                    <td data-label="Reference" style={{ ...td, color: 'var(--ink-soft)' }}>{a.referenceNumber}</td>
+                    <td data-label="Amount" style={{ ...td, fontWeight: 700 }}>{money(a.investment?.totalAmount)}</td>
+                    <td data-label="Officer" style={{ ...td, color: 'var(--ink-soft)' }}>{a.officer ? `${a.officer.firstName} ${a.officer.lastName}` : '-'}</td>
+                    <td data-label="Date" style={{ ...td, color: 'var(--ink-soft)' }}>{formatDate(a.submittedAt || a.createdAt)}</td>
+                    <td data-label="Status" style={td}><span className={b.className}>{a.status === 'approved' ? 'Approved' : b.label}</span></td>
+                    <td data-label="Actions" style={td}>
                       <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
                         <Link href={`/admin/applications/${a.id}`} style={{ fontSize: 12, fontWeight: 700, color: 'var(--green-700)', textDecoration: 'none' }}>Review</Link>
                         {a.status === 'pending_approval' && (

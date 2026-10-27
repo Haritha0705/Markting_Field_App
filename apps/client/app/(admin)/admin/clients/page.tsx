@@ -63,21 +63,21 @@ export default function AdminClientsPage() {
             <tbody>
               {rows.map(c => (
                 <tr key={c.id} style={{ borderBottom: '1px solid var(--line)' }}>
-                  <td style={td}>
+                  <td data-label="Client" style={td}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                       <div className="avatar" style={{ width: 32, height: 32, fontSize: 11 }}>{getInitials(c.fullName)}</div>
                       <div>
-                        <div style={{ fontWeight: 700 }}>{c.fullName}</div>
+                        <div className="clamp-2" title={c.fullName} style={{ fontWeight: 700 }}>{c.fullName}</div>
                         <div style={{ fontSize: 11, color: 'var(--ink-faint)' }}>{c.mobileNumber}</div>
                       </div>
                     </div>
                   </td>
-                  <td style={{ ...td, color: 'var(--ink-soft)' }}>{c.referenceNumber}</td>
-                  <td style={{ ...td, fontWeight: 700 }}>{money(c.investment?.totalAmount)}</td>
-                  <td style={{ ...td, color: Number(c.investment?.balanceRemaining || 0) > 0 ? 'var(--orange-600)' : 'var(--ink-soft)', fontWeight: 700 }}>{money(c.investment?.balanceRemaining)}</td>
-                  <td style={{ ...td, color: 'var(--ink-soft)' }}>{c.officer ? `${c.officer.firstName} ${c.officer.lastName}` : '-'}</td>
-                  <td style={{ ...td, color: 'var(--ink-soft)' }}>{formatDate(c.approvedAt)}</td>
-                  <td style={td}>
+                  <td data-label="Reference" style={{ ...td, color: 'var(--ink-soft)' }}>{c.referenceNumber}</td>
+                  <td data-label="Invested" style={{ ...td, fontWeight: 700 }}>{money(c.investment?.totalAmount)}</td>
+                  <td data-label="Balance" style={{ ...td, color: Number(c.investment?.balanceRemaining || 0) > 0 ? 'var(--orange-600)' : 'var(--ink-soft)', fontWeight: 700 }}>{money(c.investment?.balanceRemaining)}</td>
+                  <td data-label="Officer" style={{ ...td, color: 'var(--ink-soft)' }}>{c.officer ? `${c.officer.firstName} ${c.officer.lastName}` : '-'}</td>
+                  <td data-label="Approved" style={{ ...td, color: 'var(--ink-soft)' }}>{formatDate(c.approvedAt)}</td>
+                  <td data-label="" style={td}>
                     <Link href={`/admin/applications/${c.id}`} style={{ fontSize: 12, fontWeight: 700, color: 'var(--green-700)', textDecoration: 'none' }}>View</Link>
                   </td>
                 </tr>

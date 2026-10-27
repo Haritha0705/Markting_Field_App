@@ -406,7 +406,7 @@ function NewClientWizard() {
             <label className="field-label">Branch</label>
             <div className="field-input">
               <PinIcon />
-              <select value={branchId} onChange={e => setBranchId(e.target.value)} disabled={!!app} style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: 'inherit', font: 'inherit' }}>
+              <select value={branchId} onChange={e => setBranchId(e.target.value)} disabled={!!app} style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: 'inherit' }}>
                 <option value="">Head Office</option>
                 {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>

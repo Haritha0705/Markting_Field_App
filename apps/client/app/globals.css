@@ -804,17 +804,24 @@ body { overflow-wrap: break-word; }
 /* ---- Admin: laptops and desktops ---- */
 .admin-sidebar { overflow-y: auto; }
 .admin-page { max-width: 1600px; margin: 0 auto; }
-.admin-stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; }
+.admin-stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (min-width: 769px) { .admin-stat-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; } }
+@media (min-width: 1600px) { .admin-stat-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 
 /* Tables: codes, dates and amounts stay on one line; the client column wraps */
 .admin-table-wrap th, .admin-table-wrap td { white-space: nowrap; }
 .admin-table-wrap td:first-child { white-space: normal; min-width: 200px; }
+/* Officer names wrap instead of pushing columns off-screen */
+.admin-table-wrap td[data-label="Officer"] { white-space: normal; min-width: 140px; max-width: 180px; }
 .admin-table-wrap table { min-width: 100%; }
 
 /* Small laptops (1024–1279px) */
 @media (min-width: 769px) and (max-width: 1279px) {
   .admin-sidebar { width: 220px; }
   .admin-content { margin-left: 220px; padding: 20px; }
+}
+/* Laptops up to 1440px: tighter cells so wide tables fit without scrolling */
+@media (min-width: 769px) and (max-width: 1439px) {
   .admin-table-wrap th, .admin-table-wrap td { padding-left: 12px !important; padding-right: 12px !important; }
 }
 
@@ -834,3 +841,33 @@ body { overflow-wrap: break-word; }
   box-shadow: -12px 0 12px -12px rgba(0,0,0,.6);
 }
 .admin-table-wrap td:first-child:last-child { position: static; box-shadow: none; }
+
+/* Long names: at most two lines, full name in the tooltip */
+.clamp-2 { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; overflow-wrap: anywhere; }
+
+/* Date fields: one calendar icon (ours); tapping anywhere opens the picker */
+.field-input input[type="date"] { position: relative; }
+.field-input input[type="date"]::-webkit-calendar-picker-indicator {
+  position: absolute; inset: 0; width: auto; height: auto; opacity: 0; cursor: pointer;
+}
+:root[data-theme="dark"] .field-input input[type="date"] { color-scheme: dark; }
+
+/* Admin tables on phones: each row becomes a card with labelled values */
+@media (max-width: 768px) {
+  .admin-table-wrap { overflow-x: visible; }
+  .admin-table-wrap table, .admin-table-wrap tbody, .admin-table-wrap tr, .admin-table-wrap td { display: block; width: 100%; min-width: 0 !important; }
+  .admin-table-wrap thead { display: none; }
+  .admin-table-wrap tr { padding: 14px 16px; }
+  .admin-table-wrap td {
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+    padding: 5px 0 !important; white-space: normal !important; text-align: right; max-width: none !important;
+  }
+  .admin-table-wrap td::before {
+    content: attr(data-label); font-size: 12px; font-weight: 600; color: var(--ink-faint); text-align: left; flex-shrink: 0;
+  }
+  .admin-table-wrap td[data-label="Client"] { text-align: left; padding-bottom: 8px !important; }
+  .admin-table-wrap td[data-label="Client"]::before, .admin-table-wrap td[data-label=""]::before { display: none; }
+  .admin-table-wrap th:last-child, .admin-table-wrap td:last-child { position: static; box-shadow: none; background: none; }
+  .admin-table-wrap td:last-child { justify-content: flex-start; padding-top: 10px !important; }
+  .admin-table-wrap td:last-child::before { display: none; }
+}

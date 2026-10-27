@@ -145,7 +145,7 @@ export default function AdminSettingsPage() {
         <p style={{ fontSize: 13, color: 'var(--ink-soft)', marginTop: 4 }}>Manage your account and system preferences</p>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))', gap: 20 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))', gap: 20, alignItems: 'start' }}>
         {/* Account */}
         <div className="glass-card" style={{ padding: 22 }}>
           <h3 style={{ fontSize: 15, fontWeight: 800, marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}>
@@ -177,8 +177,8 @@ export default function AdminSettingsPage() {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <div style={{ display: 'flex', gap: 10 }}>
-              <div className="field-input" style={{ flex: 1 }}><UserIcon /><input aria-label="First name" placeholder="First name" value={firstName} onChange={e => setFirstName(e.target.value)} /></div>
-              <div className="field-input" style={{ flex: 1 }}><input aria-label="Last name" placeholder="Last name" value={lastName} onChange={e => setLastName(e.target.value)} /></div>
+              <div className="field-input" style={{ flex: 1, minWidth: 0 }}><UserIcon /><input aria-label="First name" placeholder="First name" value={firstName} onChange={e => setFirstName(e.target.value)} /></div>
+              <div className="field-input" style={{ flex: 1, minWidth: 0 }}><input aria-label="Last name" placeholder="Last name" value={lastName} onChange={e => setLastName(e.target.value)} /></div>
             </div>
             <div className="field-input"><PhoneIcon /><input type="tel" autoComplete="tel" aria-label="Mobile number" placeholder="Mobile number" value={phone} onChange={e => setPhone(e.target.value)} /></div>
             <div className="field-input"><CalendarIcon /><input type="date" aria-label="Date of birth" value={dob} max={new Date().toISOString().slice(0, 10)} onChange={e => setDob(e.target.value)} /></div>

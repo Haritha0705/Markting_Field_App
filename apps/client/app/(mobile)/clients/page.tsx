@@ -102,7 +102,7 @@ export default function ClientsListPage() {
               <Link key={c.id} href={`/clients/${c.id}`} className="client-row stagger-item" style={{ animationDelay: `${Math.min(i, 10) * 0.05}s` }}>
                 <div className="avatar" style={{ width: 42, height: 42, fontSize: 14 }}>{getInitials(c.fullName)}</div>
                 <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ fontSize: 14.5, fontWeight: 700 }}>{c.fullName}</div>
+                  <div className="clamp-2" style={{ fontSize: 14.5, fontWeight: 700 }}>{c.fullName}</div>
                   <div style={{ fontSize: 12, color: 'var(--ink-soft)', marginTop: 2 }}>
                     {c.investment?.paymentType === 'part' && Number(c.investment.balanceRemaining) > 0
                       ? `Part Payment · Balance ${money(c.investment.balanceRemaining)}`
