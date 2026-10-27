@@ -21,6 +21,15 @@ export const API_ORIGIN = /^https?:\/\//.test(API_BASE)
 export const fileUrl = (path?: string | null) =>
   !path ? '' : /^https?:\/\//.test(path) ? path : `${API_ORIGIN}${path}`;
 
+/** Like fileUrl, but asks Cloudinary for a resized, auto-format/quality image.
+ *  `transform` is a Cloudinary transformation, e.g. 'c_fill,g_face,w_160,h_160'. */
+export const imageUrl = (path?: string | null, transform = '') => {
+  const url = fileUrl(path);
+  if (!/^https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\//.test(url)) return url;
+  const t = ['f_auto', 'q_auto', transform].filter(Boolean).join(',');
+  return url.replace('/image/upload/', `/image/upload/${t}/`);
+};
+
 /** Fired when the server rejects the session, so the auth context can log out. */
 export const SESSION_EXPIRED_EVENT = 'pgg:session-expired';
 

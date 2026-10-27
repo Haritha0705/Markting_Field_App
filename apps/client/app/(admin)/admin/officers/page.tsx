@@ -1,7 +1,7 @@
 'use client';
 import { useCallback, useEffect, useState } from 'react';
 import { useAuth } from '@/lib/auth-context';
-import { fileUrl, officersApi } from '@/lib/api';
+import { imageUrl, officersApi } from '@/lib/api';
 import { getInitials } from '@/lib/format';
 import { errorMessage, useToast } from '@/lib/toast';
 import type { OfficerOverview } from '@/lib/types';
@@ -201,7 +201,7 @@ export default function AdminOfficersPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 14 }}>
                 <div className="avatar" style={{ width: 44, height: 44, fontSize: 14, overflow: 'hidden' }}>
                   {o.imgUrl
-                    ? <img src={fileUrl(o.imgUrl)} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    ? <img src={imageUrl(o.imgUrl, 'c_fill,g_face,w_120,h_120')} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                     : getInitials(`${o.firstName} ${o.lastName}`)}
                 </div>
                 <div style={{ flex: 1, minWidth: 0 }}>

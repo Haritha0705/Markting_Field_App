@@ -17,14 +17,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { randomUUID } from 'crypto';
-import { extname } from 'path';
-import {
-  API_ROUTES,
-  MAX_UPLOAD_BYTES,
-  UPLOAD_ROOT,
-} from '../../../common/constants';
+import { memoryStorage } from 'multer';
+import { API_ROUTES, MAX_UPLOAD_BYTES } from '../../../common/constants';
 import { ApplicationService } from '../services/application.service';
 import { CreateApplicationDto } from '../dto/create-application.dto';
 import { UpdateInvestmentDto } from '../dto/update-investment.dto';
@@ -39,14 +33,11 @@ import { DocumentType } from '../enums/client.enums';
 import { Roles } from '../../auth/decorators/roles.decorator';
 import { Role } from '../../users/enums/users-type.enum';
 
-const ALLOWED_MIME = /^(image\/(jpeg|png|webp|heic)|application\/pdf)$/;
+const ALLOWED_MIME = /^(image\/(jpeg|png|webp|heic|heif)|application\/pdf)$/;
 
 const uploadOptions = {
-  storage: diskStorage({
-    destination: UPLOAD_ROOT,
-    filename: (_req, file, cb) =>
-      cb(null, `${randomUUID()}${extname(file.originalname).toLowerCase()}`),
-  }),
+  // Held in memory and streamed to Cloudinary by the service
+  storage: memoryStorage(),
   limits: { fileSize: MAX_UPLOAD_BYTES },
   fileFilter: (_req, file, cb) =>
     ALLOWED_MIME.test(file.mimetype)

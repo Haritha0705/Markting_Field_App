@@ -7,13 +7,12 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, ILike, In, Like, FindOptionsWhere } from 'typeorm';
 import { randomInt } from 'crypto';
-import { unlink } from 'fs/promises';
-import { basename, join } from 'path';
 import * as bcrypt from 'bcrypt';
 import { Application } from '../entities/application.entity';
 import { Investment } from '../entities/investment.entity';
 import { BankingDetail } from '../entities/banking-detail.entity';
-import { Nominee } from '../entities/nominee.entity';1
+import { Nominee } from '../entities/nominee.entity';
+1;
 import { Document } from '../entities/document.entity';
 import { Branch } from '../entities/branch.entity';
 import { Payment } from '../entities/payment.entity';
@@ -36,7 +35,10 @@ import {
 } from '../enums/client.enums';
 import { Role } from '../../users/enums/users-type.enum';
 import { PageResponseDto } from '../../../common/dto/page-response';
-import { UPLOAD_ROOT } from '../../../common/constants';
+import {
+  CloudinaryService,
+  UploadedBuffer,
+} from '../../../common/storage/cloudinary.service';
 import { NotificationService } from './notification.service';
 
 /** The authenticated caller, as attached to the request by AuthGuard. */
@@ -95,6 +97,7 @@ export class ApplicationService {
     private readonly documentRepo: Repository<Document>,
     @InjectRepository(Branch)
     private readonly branchRepo: Repository<Branch>,
+    private readonly storage: CloudinaryService,
     @InjectRepository(Payment)
     private readonly paymentRepo: Repository<Payment>,
     private readonly notificationService: NotificationService,
@@ -343,13 +346,11 @@ export class ApplicationService {
   async uploadDocument(
     id: string,
     documentType: DocumentType,
-    file: { filename: string; size: number; mimetype: string },
+    file: UploadedBuffer,
     user: RequestUser,
   ): Promise<Application> {
-    const app = await this.findEditable(id, user).catch(async (err) => {
-      await this.removeFile(`/uploads/${file.filename}`);
-      throw err;
-    });
+    await this.findEditable(id, user);
+    const stored = await this.storage.upload(file, `applications/${id}`);
 
     let doc = await this.documentRepo.findOne({
       where: { application: { id }, documentType },
@@ -363,14 +364,18 @@ export class ApplicationService {
       });
     }
     doc.status = DocumentStatus.UPLOADED;
-    doc.fileUrl = `/uploads/${file.filename}`;
-    doc.fileSize = String(file.size);
-    doc.mimeType = file.mimetype;
+    doc.fileUrl = stored.url;
+    doc.fileSize = String(stored.size);
+    doc.mimeType = stored.mimeType;
     doc.uploadedAt = new Date();
-    await this.documentRepo.save(doc);
+    // Don't leave an orphan file on Cloudinary if the record can't be saved
+    await this.documentRepo.save(doc).catch(async (err) => {
+      await this.storage.remove(stored.url);
+      throw err;
+    });
 
     if (previousUrl && previousUrl !== doc.fileUrl) {
-      await this.removeFile(previousUrl);
+      await this.storage.remove(previousUrl);
     }
     return this.findById(id);
   }
@@ -385,7 +390,7 @@ export class ApplicationService {
       where: { application: { id }, documentType },
     });
     if (doc) {
-      if (doc.fileUrl) await this.removeFile(doc.fileUrl);
+      await this.storage.remove(doc.fileUrl);
       doc.fileUrl = null as any;
       doc.fileSize = null as any;
       doc.mimeType = null as any;
@@ -436,7 +441,12 @@ export class ApplicationService {
     await this.findEditable(id, user);
     const secret = await this.applicationRepo.findOne({
       where: { id },
-      select: { id: true, otpHash: true, otpExpiresAt: true, otpAttempts: true },
+      select: {
+        id: true,
+        otpHash: true,
+        otpExpiresAt: true,
+        otpAttempts: true,
+      },
     });
     if (!secret?.otpHash || !secret.otpExpiresAt) {
       throw new BadRequestException('Request an OTP first');
@@ -572,9 +582,10 @@ export class ApplicationService {
   ): Promise<Application> {
     const app = await this.findForUser(id, user);
     if (
-      ![ApplicationStatus.PENDING_APPROVAL, ApplicationStatus.APPROVED].includes(
-        app.status,
-      )
+      ![
+        ApplicationStatus.PENDING_APPROVAL,
+        ApplicationStatus.APPROVED,
+      ].includes(app.status)
     ) {
       throw new BadRequestException(
         'Payments can be recorded once the application is submitted',
@@ -712,7 +723,10 @@ export class ApplicationService {
     const [total, drafts, pending, verified, rejected] = await Promise.all([
       this.applicationRepo.count({ where }),
       countBy([ApplicationStatus.DRAFT]),
-      countBy([ApplicationStatus.SUBMITTED, ApplicationStatus.PENDING_APPROVAL]),
+      countBy([
+        ApplicationStatus.SUBMITTED,
+        ApplicationStatus.PENDING_APPROVAL,
+      ]),
       countBy([ApplicationStatus.APPROVED]),
       countBy([ApplicationStatus.REJECTED]),
     ]);
@@ -809,7 +823,9 @@ export class ApplicationService {
       order: { referenceNumber: 'DESC' },
       select: { id: true, referenceNumber: true },
     });
-    const lastSeq = last ? parseInt(last.referenceNumber.slice(prefix.length)) : 0;
+    const lastSeq = last
+      ? parseInt(last.referenceNumber.slice(prefix.length))
+      : 0;
     return `${prefix}${String((lastSeq || 0) + 1).padStart(5, '0')}`;
   }
 
@@ -823,10 +839,5 @@ export class ApplicationService {
       }),
     );
     await this.documentRepo.save(docs);
-  }
-
-  private async removeFile(fileUrl: string): Promise<void> {
-    // Only ever delete inside the upload folder
-    await unlink(join(UPLOAD_ROOT, basename(fileUrl))).catch(() => undefined);
   }
 }

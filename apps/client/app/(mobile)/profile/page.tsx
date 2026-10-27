@@ -2,10 +2,11 @@
 import { ChangeEvent, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { applicationsApi, authApi, fileUrl } from '@/lib/api';
+import { applicationsApi, authApi, imageUrl } from '@/lib/api';
 import { formatDate, money } from '@/lib/format';
 import { useTheme } from '@/lib/theme';
 import { errorMessage, useToast } from '@/lib/toast';
+import { MAX_UPLOAD_BYTES, shrinkImage } from '@/lib/image';
 import type { ApplicationStats } from '@/lib/types';
 import type { SessionUser } from '@/lib/types';
 import { ErrorBox, InfoRow } from '@/components/ui';
@@ -14,7 +15,6 @@ import {
   PhoneIcon, CalendarIcon, CameraIcon,
 } from '@/components/icons';
 
-const MAX_PHOTO_BYTES = 10 * 1024 * 1024;
 
 /** Keeps the stored session in step with what /auth/me returns. */
 const profileFields = (me: SessionUser): Partial<SessionUser> => ({
@@ -95,14 +95,15 @@ export default function ProfilePage() {
   };
 
   const onPhotoChosen = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const chosen = e.target.files?.[0];
     e.target.value = '';
-    if (!file || !token) return;
-    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) { setProfileError('Choose a JPG, PNG or WEBP image'); return; }
-    if (file.size > MAX_PHOTO_BYTES) { setProfileError('Photo must be 10 MB or smaller'); return; }
+    if (!chosen || !token) return;
+    if (!/^image\/(jpeg|png|webp)$/.test(chosen.type)) { setProfileError('Choose a JPG, PNG or WEBP image'); return; }
     setPhotoBusy(true);
     setProfileError('');
     try {
+      const file = await shrinkImage(chosen);
+      if (file.size > MAX_UPLOAD_BYTES) { setProfileError('Photo must be 4 MB or smaller'); return; }
       const me = await authApi.uploadPhoto(file, file.name, token);
       updateUser({ imgUrl: me.imgUrl });
       toast('Photo updated');
@@ -164,7 +165,7 @@ export default function ProfilePage() {
         <div style={{ position: 'relative' }}>
           <div className="avatar" style={{ width: 80, height: 80, fontSize: 26, overflow: 'hidden' }}>
             {user?.imgUrl
-              ? <img src={fileUrl(user.imgUrl)} alt="Profile photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ? <img src={imageUrl(user.imgUrl, 'c_fill,g_face,w_200,h_200')} alt="Profile photo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : initials}
           </div>
           {editing && (

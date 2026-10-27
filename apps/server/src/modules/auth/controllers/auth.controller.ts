@@ -1,9 +1,5 @@
 import { JwtAuthService } from '../service/jwt.service';
-import {
-  API_ROUTES,
-  MAX_UPLOAD_BYTES,
-  UPLOAD_ROOT,
-} from '../../../common/constants';
+import { API_ROUTES, MAX_UPLOAD_BYTES } from '../../../common/constants';
 import {
   BadRequestException,
   Body,
@@ -20,20 +16,15 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { randomUUID } from 'crypto';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
 import { Public } from '../decorators/public.decorator';
 import { LoginRequestDto } from '../dto/login-request.dto';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 import { UpdateMeDto } from '../dto/update-me.dto';
 
 const photoUploadOptions = {
-  storage: diskStorage({
-    destination: UPLOAD_ROOT,
-    filename: (_req, file, cb) =>
-      cb(null, `${randomUUID()}${extname(file.originalname).toLowerCase()}`),
-  }),
+  // Held in memory and streamed to Cloudinary by the service
+  storage: memoryStorage(),
   limits: { fileSize: MAX_UPLOAD_BYTES },
   fileFilter: (_req, file, cb) =>
     /^image\/(jpeg|png|webp)$/.test(file.mimetype)

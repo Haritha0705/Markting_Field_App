@@ -2,12 +2,13 @@
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { applicationsApi, branchesApi, fileUrl } from '@/lib/api';
+import { applicationsApi, branchesApi, fileUrl, imageUrl } from '@/lib/api';
 import { money } from '@/lib/format';
 import { errorMessage, useToast } from '@/lib/toast';
 import type { Application, Branch, DocumentType } from '@/lib/types';
 import { ErrorBox, Loading } from '@/components/ui';
 import { SignaturePad } from '@/components/signature-pad';
+import { MAX_UPLOAD_BYTES, shrinkImage } from '@/lib/image';
 import {
   ChevronLeftIcon, UserIcon, CardIcon, PinIcon, CalendarIcon,
   PhoneIcon, MailIcon, FileIcon, CheckIcon, UploadIcon, ShieldIcon, EditIcon,
@@ -289,11 +290,12 @@ function NewClientWizard() {
   };
 
   const onFileChosen = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+    const chosen = e.target.files?.[0];
     const type = pendingUpload.current;
     e.target.value = '';
-    if (!file || !type) return;
-    if (file.size > 10 * 1024 * 1024) { setError('File is larger than 10 MB'); return; }
+    if (!chosen || !type) return;
+    const file = await shrinkImage(chosen);
+    if (file.size > MAX_UPLOAD_BYTES) { setError('File is larger than 4 MB'); return; }
     await upload(type, file, file.name);
   };
 
@@ -637,7 +639,7 @@ function NewClientWizard() {
                 </div>
                 {up && doc?.fileUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={fileUrl(doc.fileUrl)} alt={`${s.label} preview`} style={{ height: 34, borderRadius: 6, background: '#fff' }} />
+                  <img src={imageUrl(doc.fileUrl, 'h_102')} alt={`${s.label} preview`} style={{ height: 34, borderRadius: 6, background: '#fff' }} />
                 )}
               </button>
             );

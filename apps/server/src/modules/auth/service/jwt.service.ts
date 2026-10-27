@@ -7,9 +7,10 @@ import {
 import { JwtService as NestJwtService } from '@nestjs/jwt';
 import { User } from '../../users/entities/user.entity';
 import { Profile } from '../../users/entities/profile.entity';
-import { UPLOAD_ROOT } from '../../../common/constants';
-import { unlink } from 'fs/promises';
-import { basename, join } from 'path';
+import {
+  CloudinaryService,
+  UploadedBuffer,
+} from '../../../common/storage/cloudinary.service';
 import { LoginRequestDto } from '../dto/login-request.dto';
 import { ChangePasswordDto } from '../dto/change-password.dto';
 import { UpdateMeDto } from '../dto/update-me.dto';
@@ -21,6 +22,7 @@ export class JwtAuthService {
   constructor(
     private readonly jwtService: NestJwtService,
     private readonly userRepository: UserRepository,
+    private readonly storage: CloudinaryService,
   ) {}
 
   async validateUser(dto: LoginRequestDto): Promise<User> {
@@ -102,17 +104,18 @@ export class JwtAuthService {
     return this.getMe(userId);
   }
 
-  async updatePhoto(userId: string, file: { filename: string }) {
+  async updatePhoto(userId: string, file: UploadedBuffer) {
     const user = await this.userRepository.findById(userId);
-    if (!user) {
-      await this.removeFile(`/uploads/${file.filename}`);
-      throw new NotFoundException('User not found');
-    }
+    if (!user) throw new NotFoundException('User not found');
+    const stored = await this.storage.upload(file, `profiles/${userId}`);
     const previousUrl = user.profile?.imgUrl;
-    await this.userRepository.saveProfile(userId, {
-      imgUrl: `/uploads/${file.filename}`,
-    });
-    if (previousUrl) await this.removeFile(previousUrl);
+    await this.userRepository
+      .saveProfile(userId, { imgUrl: stored.url })
+      .catch(async (err) => {
+        await this.storage.remove(stored.url);
+        throw err;
+      });
+    await this.storage.remove(previousUrl);
     return this.getMe(userId);
   }
 
@@ -121,14 +124,9 @@ export class JwtAuthService {
     if (!user) throw new NotFoundException('User not found');
     if (user.profile?.imgUrl) {
       await this.userRepository.saveProfile(userId, { imgUrl: null as any });
-      await this.removeFile(user.profile.imgUrl);
+      await this.storage.remove(user.profile.imgUrl);
     }
     return this.getMe(userId);
-  }
-
-  private async removeFile(fileUrl: string): Promise<void> {
-    // Only ever delete inside the upload folder
-    await unlink(join(UPLOAD_ROOT, basename(fileUrl))).catch(() => undefined);
   }
 
   async changePassword(userId: string, dto: ChangePasswordDto): Promise<void> {

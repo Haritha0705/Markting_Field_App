@@ -6,6 +6,7 @@ import {
   HomeIcon, UsersIcon, FileIcon, SettingsIcon, LogoutIcon, MenuIcon, UserIcon, PercentIcon,
 } from '@/components/icons';
 import { useAuth } from '@/lib/auth-context';
+import { BrandLogo } from '@/components/brand-logo';
 
 const sidebarItems = [
   { href: '/admin/dashboard', icon: HomeIcon, label: 'Dashboard' },
@@ -50,15 +51,7 @@ function AdminShell({ children }: { children: React.ReactNode }) {
       <aside className={`admin-sidebar ${mobileMenuOpen ? 'open' : ''}`}>
         {/* Logo */}
         <div style={{ padding: '6px 20px 22px', display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 36, height: 36, borderRadius: 11,
-            background: 'var(--acc)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--on)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
-              <path d="M12 3c3 3 7 4 7 9a7 7 0 01-14 0c0-5 4-6 7-9z"/>
-            </svg>
-          </div>
+          <BrandLogo size={36} radius={11} />
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: 15, fontWeight: 800 }}>PGG Admin</div>
             <div style={{ fontSize: 10, color: 'var(--ink-faint)', fontWeight: 600 }}>Head Office</div>

@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth, ADMIN_ROLES } from '@/lib/auth-context';
 import { authApi } from '@/lib/api';
 import { UserIcon, LockIcon, EyeIcon, EyeOffIcon, ShieldIcon } from '@/components/icons';
+import { BrandLogo } from '@/components/brand-logo';
 
 export default function AdminLoginPage() {
   const [email, setEmail] = useState('');
@@ -41,17 +42,8 @@ export default function AdminLoginPage() {
     <div className="admin-auth">
       {/* Brand panel */}
       <aside className="admin-auth-brand">
-        <div style={{
-          width: 64, height: 64, borderRadius: 18,
-          background: 'var(--acc)',
-          boxShadow: '0 14px 34px -8px rgba(47,210,122,.7)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          marginBottom: 16,
-        }}>
-          <svg viewBox="0 0 24 24" fill="none" stroke="var(--on)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width={32} height={32}>
-            <path d="M12 3c3 3 7 4 7 9a7 7 0 01-14 0c0-5 4-6 7-9z"/>
-            <path d="M12 12v8"/>
-          </svg>
+        <div style={{ marginBottom: 16 }}>
+          <BrandLogo size={64} radius={18} glow />
         </div>
         <div style={{ fontSize: 28, fontWeight: 800, letterSpacing: .5 }}>PGG Admin</div>
         <div style={{ fontSize: 11, letterSpacing: 2.5, color: 'rgba(255,255,255,.75)', marginTop: 4, fontWeight: 600, textTransform: 'uppercase' }}>Head Office</div>
@@ -65,15 +57,7 @@ export default function AdminLoginPage() {
         <form onSubmit={handleLogin} className="glass-card admin-auth-card">
           {/* Logo mark when the brand panel is hidden (tablet / phone) */}
           <div className="admin-auth-mark" style={{ alignItems: 'center', gap: 10, marginBottom: 20 }}>
-            <div style={{
-              width: 36, height: 36, borderRadius: 11,
-              background: 'var(--acc)',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-            }}>
-              <svg viewBox="0 0 24 24" fill="none" stroke="var(--on)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" width={20} height={20}>
-                <path d="M12 3c3 3 7 4 7 9a7 7 0 01-14 0c0-5 4-6 7-9z"/>
-              </svg>
-            </div>
+            <BrandLogo size={36} radius={11} />
             <div>
               <div style={{ fontSize: 15, fontWeight: 800 }}>PGG Admin</div>
               <div style={{ fontSize: 10, color: 'var(--ink-faint)', fontWeight: 600 }}>Head Office</div>

@@ -5,7 +5,7 @@
  * - API (/app/*) and uploads (/uploads/*) are never cached: they carry client data.
  * Bump VERSION to drop old caches on the next deploy.
  */
-const VERSION = 'v1';
+const VERSION = 'v2';
 const SHELL_CACHE = `pgg-shell-${VERSION}`;
 const STATIC_CACHE = `pgg-static-${VERSION}`;
 const PAGE_CACHE = `pgg-pages-${VERSION}`;
@@ -17,6 +17,7 @@ const PRECACHE = [
   '/icons/icon-192.png',
   '/icons/icon-512.png',
   '/icons/apple-touch-icon.png',
+  '/logo.png',
 ];
 
 self.addEventListener('install', (event) => {
