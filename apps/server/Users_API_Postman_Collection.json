@@ -1,0 +1,487 @@
+{
+  "info": {
+    "name": "Users API",
+    "description": "Postman Collection for the Users API, including Roles (Admin, Agent, Customer)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Users (Base)",
+      "item": [
+        {
+          "name": "Create User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"role\": \"admin\",\n  \"isActive\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"]
+            }
+          }
+        },
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users?pageNumber=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["users"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/users/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Admins",
+      "item": [
+        {
+          "name": "Create Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@example.com\",\n  \"passwordHash\": \"password123\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"role\": \"admin\",\n  \"isActive\": true,\n  \"department\": \"HR\",\n  \"adminProfile\": {\n    \"dob\": \"1990-01-01\",\n    \"imgUrl\": \"http://example.com/img.jpg\",\n    \"bio\": \"Admin bio\",\n    \"officeLocation\": \"Building A\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin"]
+            }
+          }
+        },
+        {
+          "name": "Get All Admins",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin?pageNumber=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Admin By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Admin",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"department\": \"IT\",\n  \"lastName\": \"Smith\",\n  \"profileUpdate\": {\n    \"officeLocation\": \"Building B\",\n    \"bio\": \"Updated bio\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Admin",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Admin Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/1/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "1", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Admin Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"officeLocation\": \"Building B\",\n  \"bio\": \"Updated bio\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/admin/1/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "1", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Agents",
+      "item": [
+        {
+          "name": "Create Agent",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"agent@example.com\",\n  \"passwordHash\": \"password123\",\n  \"firstName\": \"Agent\",\n  \"lastName\": \"Smith\",\n  \"role\": \"agent\",\n  \"isActive\": true,\n  \"territory\": \"North Region\",\n  \"agentProfile\": {\n    \"dob\": \"1992-05-05\",\n    \"imgUrl\": \"http://example.com/img.jpg\",\n    \"bio\": \"Agent bio\",\n    \"yearsOfExperience\": 5\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/agent",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent"]
+            }
+          }
+        },
+        {
+          "name": "Get All Agents",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent?pageNumber=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Agent By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Agent",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"territory\": \"South Region\",\n  \"lastName\": \"AgentSmith\",\n  \"profileUpdate\": {\n    \"yearsOfExperience\": 6,\n    \"bio\": \"Updated bio\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/agent/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Agent",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Agent Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/agent/1/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent", "1", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Agent Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"yearsOfExperience\": 6,\n  \"bio\": \"Updated bio\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/agent/1/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["agent", "1", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Customers",
+      "item": [
+        {
+          "name": "Create Customer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"customer@example.com\",\n  \"passwordHash\": \"password123\",\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Customer\",\n  \"role\": \"customer\",\n  \"isActive\": true,\n  \"customerType\": \"Premium\",\n  \"customerProfile\": {\n    \"dob\": \"1985-10-10\",\n    \"imgUrl\": \"http://example.com/img.jpg\",\n    \"bio\": \"Customer bio\",\n    \"shippingAddress\": \"123 Main St\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customer",
+              "host": ["{{baseUrl}}"],
+              "path": ["customer"]
+            }
+          }
+        },
+        {
+          "name": "Get All Customers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customer?pageNumber=0&size=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["customer"],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Customer By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customer/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["customer", "1"]
+            }
+          }
+        },
+        {
+          "name": "Update Customer",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"customerType\": \"Retail\",\n  \"lastName\": \"CustomerDoe\",\n  \"profileUpdate\": {\n    \"shippingAddress\": \"456 New St\",\n    \"bio\": \"Updated bio\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customer/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["customer", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Customer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customer/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["customer", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Customer Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/customer/1/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["customer", "1", "profile"]
+            }
+          }
+        },
+        {
+          "name": "Update Customer Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"shippingAddress\": \"456 New St\",\n  \"bio\": \"Updated bio\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/customer/1/profile",
+              "host": ["{{baseUrl}}"],
+              "path": ["customer", "1", "profile"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}

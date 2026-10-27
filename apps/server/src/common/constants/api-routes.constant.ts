@@ -1,0 +1,15 @@
+export const API_ROUTES = {
+  HEALTH: 'health',
+  AUTH: 'auth',
+  USERS: 'user',
+  ADMINS: 'admin',
+  AGENTS: 'agent',
+  CUSTOMERS: 'customer',
+  CLIENTS: 'clients',
+  APPLICATIONS: 'applications',
+  QUOTATIONS: 'quotations',
+  NOTIFICATIONS: 'notifications',
+  DOCUMENTS: 'documents',
+  DASHBOARD: 'dashboard',
+  BRANCHES: 'branches',
+};
