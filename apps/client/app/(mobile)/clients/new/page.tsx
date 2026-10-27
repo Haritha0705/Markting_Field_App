@@ -6,8 +6,7 @@ import { applicationsApi, branchesApi, fileUrl, imageUrl } from '@/lib/api';
 import { money } from '@/lib/format';
 import { errorMessage, useToast } from '@/lib/toast';
 import type { Application, Branch, DocumentType } from '@/lib/types';
-import { ErrorBox, Loading } from '@/components/ui';
-import { SignaturePad } from '@/components/signature-pad';
+import { ErrorBox, Loading, Select } from '@/components/ui';
 import { MAX_UPLOAD_BYTES, shrinkImage } from '@/lib/image';
 import {
   ChevronLeftIcon, UserIcon, CardIcon, PinIcon, CalendarIcon,
@@ -106,7 +105,6 @@ function NewClientWizard() {
   const [otpSent, setOtpSent] = useState(false);
   const [devCode, setDevCode] = useState<string | undefined>();
   const [otpBusy, setOtpBusy] = useState(false);
-  const [signing, setSigning] = useState<DocumentType | null>(null);
 
   useEffect(() => {
     if (!token) return;
@@ -270,7 +268,10 @@ function NewClientWizard() {
   // ── Documents ──
   const pickFile = (type: DocumentType) => {
     pendingUpload.current = type;
-    fileInput.current?.click();
+    if (!fileInput.current) return;
+    // Signatures are shown as images, so they can't be PDFs
+    fileInput.current.accept = SIGNATURES.some(s => s.type === type) ? 'image/*' : 'image/*,application/pdf';
+    fileInput.current.click();
   };
 
   const upload = async (type: DocumentType, file: Blob, name: string) => {
@@ -318,7 +319,7 @@ function NewClientWizard() {
       setOtpSent(true);
       setDevCode(r.devCode);
       setOtp(['', '', '', '', '', '']);
-      toast(`OTP sent to ${r.sentTo}`);
+      toast(r.devCode ? 'Verification code ready' : `OTP sent to ${r.sentTo}`);
     } catch (err) {
       setError(errorMessage(err, 'Could not send OTP'));
     } finally {
@@ -404,13 +405,13 @@ function NewClientWizard() {
           </div>
           <div className="span-full">
             <label className="field-label">Branch</label>
-            <div className="field-input">
-              <PinIcon />
-              <select value={branchId} onChange={e => setBranchId(e.target.value)} disabled={!!app} style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none', color: 'inherit' }}>
-                <option value="">Head Office</option>
-                {branches.map(b => <option key={b.id} value={b.id}>{b.name}</option>)}
-              </select>
-            </div>
+            <Select
+              icon={<PinIcon />}
+              value={branchId}
+              onChange={setBranchId}
+              disabled={!!app}
+              options={[{ value: '', label: 'Head Office' }, ...branches.map(b => ({ value: b.id, label: b.name }))]}
+            />
           </div>
         </div>
       );
@@ -583,11 +584,18 @@ function NewClientWizard() {
             <div className="glass-card" style={{ padding: 22, textAlign: 'center' }}>
               <div style={{ fontSize: 30, marginBottom: 8 }}>📱</div>
               <div style={{ fontSize: 15, fontWeight: 800 }}>Enter OTP</div>
-              <div style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 6 }}>Sent to {app?.mobileNumber}</div>
-              {devCode && (
-                <div className="info-strip" style={{ marginTop: 12, justifyContent: 'center' }}>
-                  <span>Test mode (no SMS gateway): code <strong>{devCode}</strong></span>
+              {devCode ? (
+                // No SMS gateway yet: the server returns the code so onboarding isn't blocked
+                <div className="info-strip" style={{ marginTop: 12, flexDirection: 'column', gap: 8 }}>
+                  <span style={{ fontSize: 12 }}>SMS is not connected yet. Use this code for {app?.mobileNumber}:</span>
+                  <strong style={{ fontSize: 24, letterSpacing: 6, color: 'var(--green-700)' }}>{devCode}</strong>
+                  <button type="button" className="btn-outline" style={{ padding: '8px 14px', fontSize: 13, width: 'auto' }} disabled={otpBusy}
+                    onClick={() => { setOtp(devCode.split('')); verifyOtp(devCode); }}>
+                    Use this code
+                  </button>
                 </div>
+              ) : (
+                <div style={{ fontSize: 12.5, color: 'var(--ink-soft)', marginTop: 6 }}>Sent to {app?.mobileNumber}</div>
               )}
               <div className="otp-row" style={{ margin: '20px 0' }}>
                 {otp.map((digit, i) => (
@@ -616,34 +624,31 @@ function NewClientWizard() {
           {SIGNATURES.map(s => {
             const doc = docOf(s.type);
             const up = doc?.status === 'uploaded';
-            if (signing === s.type) {
-              return (
-                <div key={s.type} className="glass-card" style={{ padding: 16 }}>
-                  <div style={{ fontSize: 13.5, fontWeight: 800, marginBottom: 10 }}>{s.label}</div>
-                  <SignaturePad
-                    saving={uploadingType === s.type}
-                    onCancel={() => setSigning(null)}
-                    onSave={async (png) => { if (await upload(s.type, png, `${s.type}.png`)) setSigning(null); }}
-                  />
-                </div>
-              );
-            }
+            const busy = uploadingType === s.type;
             return (
-              <button key={s.type} type="button" className="doc-row" style={{ cursor: 'pointer', textAlign: 'left', width: '100%', font: 'inherit', color: 'inherit' }} onClick={() => setSigning(s.type)}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(47,210,122,.14)', color: 'var(--green-700)' }}>
+              <div key={s.type} className="doc-row">
+                <div style={{ width: 36, height: 36, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: up ? 'rgba(47,210,122,.14)' : 'rgba(255,255,255,.06)', color: up ? 'var(--green-700)' : 'var(--ink-faint)' }}>
                   {up ? <CheckIcon size={16} /> : <EditIcon size={16} />}
                 </div>
-                <div style={{ flex: 1 }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <div style={{ fontSize: 13, fontWeight: 700 }}>{s.label}</div>
-                  <div style={{ fontSize: 11, color: up ? 'var(--green-700)' : 'var(--ink-faint)', fontWeight: up ? 600 : 400 }}>{up ? 'Captured · tap to redo' : 'Tap to capture'}</div>
+                  <div style={{ fontSize: 11, color: up ? 'var(--green-700)' : 'var(--orange-600)', fontWeight: 600, marginTop: 2 }}>
+                    {up ? (
+                      <>Uploaded · <a href={fileUrl(doc?.fileUrl)} target="_blank" rel="noreferrer" style={{ color: 'inherit' }}>View</a> · <button type="button" onClick={() => removeDoc(s.type)} style={{ color: 'var(--red-600)', background: 'none', border: 'none', cursor: 'pointer', font: 'inherit', padding: 0 }}>Remove</button></>
+                    ) : 'Required'}
+                  </div>
                 </div>
                 {up && doc?.fileUrl && (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={imageUrl(doc.fileUrl, 'h_102')} alt={`${s.label} preview`} style={{ height: 34, borderRadius: 6, background: '#fff' }} />
+                  <img src={imageUrl(doc.fileUrl, 'h_102')} alt={`${s.label} preview`} style={{ height: 34, maxWidth: 80, objectFit: 'contain', borderRadius: 6, background: '#fff' }} />
                 )}
-              </button>
+                <button type="button" className="icon-btn" style={{ width: 34, height: 34 }} onClick={() => pickFile(s.type)} disabled={!!uploadingType} aria-label={`Upload ${s.label}`}>
+                  {busy ? <span className="spinner" style={{ width: 14, height: 14, borderColor: 'var(--line)', borderTopColor: 'var(--green-700)' }} /> : <UploadIcon size={15} />}
+                </button>
+              </div>
             );
           })}
+          <div style={{ fontSize: 11.5, color: 'var(--ink-faint)' }}>Upload a photo or scan of each signature · JPG, PNG, WEBP or HEIC. On a phone you can take a photo directly.</div>
         </div>
       );
       default: return null;

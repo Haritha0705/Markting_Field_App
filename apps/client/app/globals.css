@@ -162,6 +162,26 @@ body {
 }
 .field-input svg { width: 17px; height: 17px; color: var(--green-700); flex-shrink: 0; }
 
+/* ---- Select (dropdown under a .field-input) ---- */
+.select-trigger { width: 100%; cursor: pointer; font: inherit; text-align: left; color: var(--ink); }
+.select-trigger:disabled { cursor: default; opacity: .7; }
+.select-trigger:focus-visible { outline: none; border-color: var(--green-700); box-shadow: 0 0 0 4px rgba(47,210,122,.16); }
+.select-value { flex: 1; min-width: 0; font-size: 14.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.field-input svg.select-chevron { color: var(--ink-soft); transition: transform .2s ease; }
+.field-input svg.select-chevron.open { transform: rotate(180deg); }
+.select-menu {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 50;
+  list-style: none; padding: 6px; max-height: 260px; overflow-y: auto;
+  background: var(--glass), var(--bg); border: 1px solid var(--edge);
+  border-radius: 14px; box-shadow: var(--shadow);
+}
+.select-option {
+  padding: 11px 12px; border-radius: 10px; cursor: pointer;
+  font-size: 14px; font-weight: 600; color: var(--ink);
+}
+.select-option.active { background: var(--green-tint); }
+.select-option.selected { color: var(--green-700); background: var(--green-tint-2); }
+
 /* ---- Segmented Control ---- */
 .segmented {
   display: flex;

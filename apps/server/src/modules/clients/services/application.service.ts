@@ -421,15 +421,17 @@ export class ApplicationService {
       otpAttempts: 0,
     });
 
-    // No SMS gateway is configured yet: the code is logged on the server,
-    // and returned to the app outside production so the flow can be tested.
+    // Until an SMS gateway is connected (SMS_GATEWAY set), the code is logged
+    // and returned to the app so officers can finish onboarding. Once the
+    // gateway is added the code is only sent by SMS and never returned.
     this.logger.log(
       `OTP for ${app.referenceNumber} (${app.mobileNumber}): ${code}`,
     );
+    const smsConnected = !!process.env.SMS_GATEWAY;
     return {
       sentTo: app.mobileNumber,
       expiresInSeconds: OTP_TTL_SECONDS,
-      ...(process.env.NODE_ENV !== 'production' ? { devCode: code } : {}),
+      ...(smsConnected ? {} : { devCode: code }),
     };
   }
 
