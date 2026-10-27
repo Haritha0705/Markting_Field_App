@@ -11,12 +11,13 @@ import type {
   SessionUser,
 } from './types';
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "https://markting-field-app-server-orpin.vercel.app/app/v1";
+// Defaults to the same origin: vercel.json routes /app/* and /uploads/* to the server.
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/app/v1';
 
 /** Server origin, used to turn stored file paths (/uploads/…) into URLs. */
-export const API_ORIGIN = new URL(API_BASE).origin;
+export const API_ORIGIN = /^https?:\/\//.test(API_BASE)
+  ? new URL(API_BASE).origin
+  : '';
 export const fileUrl = (path?: string | null) =>
   !path ? '' : /^https?:\/\//.test(path) ? path : `${API_ORIGIN}${path}`;
 

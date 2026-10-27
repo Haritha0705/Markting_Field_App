@@ -12,7 +12,13 @@
   },
   "rewrites": [
     {
-      "source": "/api/(.*)",
+      "source": "/app/(.*)",
+      "destination": {
+        "service": "server"
+      }
+    },
+    {
+      "source": "/uploads/(.*)",
       "destination": {
         "service": "server"
       }

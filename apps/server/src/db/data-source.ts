@@ -1,10 +1,25 @@
+import * as pg from 'pg';
 import { DataSourceOptions } from 'typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModuleAsyncOptions } from '@nestjs/typeorm';
 
 export const dataSourceOptions: TypeOrmModuleAsyncOptions = {
   imports: [ConfigModule],
-  useFactory: buildDataSourceOptions,
+  useFactory: (configService: ConfigService) => {
+    const options = buildDataSourceOptions(configService);
+    // The Vercel bundle only contains imported files, so glob-loaded entities and
+    // migrations are missing there. Register entities via forFeature instead and
+    // let synchronize keep the schema up to date.
+    if (!process.env.VERCEL) return options;
+    return {
+      ...options,
+      entities: [],
+      migrations: [],
+      migrationsRun: false,
+      autoLoadEntities: true,
+      extra: { ...options.extra, max: 5, min: 0 },
+    };
+  },
   inject: [ConfigService],
 };
 
@@ -15,6 +30,9 @@ export function buildDataSourceOptions(
 
   return {
     type: 'postgres',
+    // Pass the driver explicitly: TypeORM loads it with a dynamic require that
+    // Vercel's file tracing can't follow, so `pg` would be missing from the bundle.
+    driver: pg,
     ...(url && { url, ssl: true }),
     host: configService.get<string>('MASTER_DATABASE_HOST'),
     port: configService.get<number>('MASTER_DATABASE_PORT'),
