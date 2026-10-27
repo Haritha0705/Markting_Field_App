@@ -19,6 +19,22 @@
             </SchemaInfo>
           </value>
         </entry>
+        <entry key="Vercel">
+          <value>
+            <SchemaInfo>
+              <option name="name" value="Vercel" />
+              <option name="relativePathToSchema" value="https://openapi.vercel.sh/vercel.json" />
+              <option name="applicationDefined" value="true" />
+              <option name="patterns">
+                <list>
+                  <Item>
+                    <option name="path" value="vercel.json" />
+                  </Item>
+                </list>
+              </option>
+            </SchemaInfo>
+          </value>
+        </entry>
       </map>
     </state>
   </component>
