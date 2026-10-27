@@ -50,11 +50,8 @@ const EDITABLE_STATUSES = [ApplicationStatus.DRAFT, ApplicationStatus.REJECTED];
 const OTP_TTL_SECONDS = 5 * 60;
 const OTP_MAX_ATTEMPTS = 5;
 
-/** Documents that must be uploaded before an application can be submitted. */
+/** Documents that must be uploaded before an application can be submitted. Supporting documents (NIC, address proof, photo) are optional. */
 const REQUIRED_DOCUMENTS: DocumentType[] = [
-  DocumentType.NIC_PASSPORT,
-  DocumentType.PROOF_OF_ADDRESS,
-  DocumentType.INVESTOR_PHOTOGRAPH,
   DocumentType.INVESTOR_SIGNATURE,
   DocumentType.OFFICER_SIGNATURE,
 ];

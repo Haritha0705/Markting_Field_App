@@ -18,15 +18,15 @@ const STEPS = [
   { num: 2, title: 'Investment Details', sub: 'Package & payment' },
   { num: 3, title: 'Banking Details', sub: 'Account information' },
   { num: 4, title: 'Nominees', sub: 'Up to 4 nominees' },
-  { num: 5, title: 'Documents', sub: 'Upload required docs' },
+  { num: 5, title: 'Documents', sub: 'Upload documents (optional)' },
   { num: 6, title: 'Declaration', sub: 'Terms & conditions' },
   { num: 7, title: 'Signature', sub: 'Verify & collect signatures' },
 ];
 
 const DOC_LIST: { type: DocumentType; name: string; required: boolean }[] = [
-  { type: 'nic_passport', name: 'NIC / Passport Copy', required: true },
-  { type: 'proof_of_address', name: 'Proof of Address', required: true },
-  { type: 'investor_photograph', name: 'Investor Photograph', required: true },
+  { type: 'nic_passport', name: 'NIC / Passport Copy', required: false },
+  { type: 'proof_of_address', name: 'Proof of Address', required: false },
+  { type: 'investor_photograph', name: 'Investor Photograph', required: false },
   { type: 'bank_confirmation', name: 'Bank Confirmation Letter', required: false },
   { type: 'source_of_funds', name: 'Source of Funds Document', required: false },
   { type: 'land_allocation', name: 'Land Allocation Document', required: false },
