@@ -321,6 +321,63 @@ body {
 }
 .toast.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
 
+/* ---- PWA banners (install / update / offline) ---- */
+.pwa-banner {
+  position: fixed;
+  left: 16px;
+  right: 16px;
+  top: calc(env(safe-area-inset-top) + 12px);
+  max-width: 480px;
+  margin: 0 auto;
+  background: #0E2A1B;
+  border: 1px solid rgba(47,210,122,.35);
+  color: var(--ink);
+  padding: 11px 12px 11px 14px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 14px 30px -10px rgba(0,0,0,.4);
+  z-index: 110;
+}
+[data-theme="light"] .pwa-banner { background: var(--card); border-color: var(--green-tint-2); }
+.pwa-banner-action {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  font: inherit;
+  font-weight: 800;
+  background: var(--acc);
+  color: var(--on);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.pwa-banner-close {
+  border: none;
+  background: none;
+  color: var(--ink-soft);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  flex-shrink: 0;
+}
+.pwa-offline {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  padding: calc(env(safe-area-inset-top) + 6px) 16px 6px;
+  background: var(--orange-600);
+  color: #1A1206;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  z-index: 120;
+}
+
 /* ---- Scrollbar ---- */
 ::-webkit-scrollbar { width: 0; }
 

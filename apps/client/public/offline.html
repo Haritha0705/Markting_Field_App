@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050B08">
+  <title>Offline · PGG Marketing Field App</title>
+  <style>
+    :root { --bg: #050B08; --ink: #EAF5EE; --ink-soft: #8FA79A; --acc: linear-gradient(135deg, #22BF69, #74EDAB); --on: #03120A; }
+    @media (prefers-color-scheme: light) { :root { --bg: #F2F4F0; --ink: #17281E; --ink-soft: #657469; --acc: linear-gradient(135deg, #1A7A44, #33A857); --on: #fff; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 0 30px; text-align: center; }
+    .logo { width: 62px; height: 62px; border-radius: 18px; background: var(--acc); box-shadow: 0 14px 34px -8px rgba(47,210,122,.7);
+      display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+    h1 { font-size: 19px; font-weight: 800; margin: 0; }
+    p { font-size: 13px; color: var(--ink-soft); margin: 6px 0 24px; line-height: 1.5; max-width: 320px; }
+    button { border: none; border-radius: 15px; font: inherit; font-size: 15px; font-weight: 800; cursor: pointer; padding: 15px 18px;
+      width: 100%; max-width: 280px; background: var(--acc); color: var(--on); box-shadow: 0 14px 28px -10px rgba(47,210,122,.6); }
+    button:active { transform: scale(.97); }
+  </style>
+</head>
+<body>
+  <div class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" width="32" height="32" style="color: var(--on)">
+      <path d="M12 3c3 3 7 4 7 9a7 7 0 01-14 0c0-5 4-6 7-9z"/><path d="M12 12v8"/>
+    </svg>
+  </div>
+  <h1>You're offline</h1>
+  <p>This page needs an internet connection. Check your mobile data or Wi-Fi, then try again.</p>
+  <button type="button" onclick="location.reload()">Try again</button>
+  <script>window.addEventListener('online', function () { location.reload(); });</script>
+</body>
+</html>
