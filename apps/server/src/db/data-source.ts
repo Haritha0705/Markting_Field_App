@@ -11,8 +11,11 @@ export const dataSourceOptions: TypeOrmModuleAsyncOptions = {
 export function buildDataSourceOptions(
   configService: ConfigService,
 ): DataSourceOptions {
+  const url = configService.get<string>('DATABASE_URL');
+
   return {
     type: 'postgres',
+    ...(url && { url, ssl: true }),
     host: configService.get<string>('MASTER_DATABASE_HOST'),
     port: configService.get<number>('MASTER_DATABASE_PORT'),
     username: configService.get<string>('MASTER_DATABASE_USERNAME'),

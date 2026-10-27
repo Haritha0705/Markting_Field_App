@@ -7,6 +7,10 @@ dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 async function seed() {
   const client = new Client({
+    ...(process.env.DATABASE_URL && {
+      connectionString: process.env.DATABASE_URL,
+      ssl: true,
+    }),
     host: process.env.MASTER_DATABASE_HOST || 'localhost',
     port: Number(process.env.MASTER_DATABASE_PORT) || 5432,
     user: process.env.MASTER_DATABASE_USERNAME || 'postgres',

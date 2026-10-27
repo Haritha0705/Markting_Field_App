@@ -1,6 +1,7 @@
 {
   "name": "Markting_Field_App",
   "private": true,
+  "packageManager": "npm@11.19.1",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
@@ -25,5 +26,10 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "allowScripts": {
+    "bcrypt@6.0.0": true,
+    "@parcel/watcher@2.6.0": true,
+    "unrs-resolver@1.12.2": true
+  }
 }
